@@ -65,7 +65,7 @@ const PDFReader = () => {
             />
           </div>
         </div>
-        <PdfView path="1.pdf"/>
+        <PdfView url="1.pdf"/>
       </div>
     </div>
   );
