@@ -22,7 +22,6 @@ export default function usePdf(url, viewer, mainCanvas, textDiv) {
 
         let _autoscale = viewer.current.offsetWidth / page.getViewport({ scale: 1.0 }).width;
         _autoscale = Math.round((window.devicePixelRatio * _autoscale - 0.1) * 10) / 10;
-        console.log(_autoscale);
         setAutoScaleVal(_autoscale);
 
         const viewport = page.getViewport({ scale });
@@ -61,19 +60,19 @@ export default function usePdf(url, viewer, mainCanvas, textDiv) {
 
     const nextPage = () => {
         console.log("next");
-        setPageNo(pageNo + 1);
+        if (pageNo < pageCount) setPageNo(pageNo + 1);
     }
     const prevPage = () => {
         console.log("prev");
-        setPageNo(pageNo - 1);
+        if (pageNo > 1) setPageNo(pageNo - 1);
     }
     const zoomIn = () => {
         console.log("zoomIn");
-        setScale(scale * 1.1);
+        setScale(Math.round((scale * 1.1) * 10) / 10);
     }
     const zoomOut = () => {
         console.log("zoomOut");
-        setScale(scale / 1.1);
+        setScale(Math.round((scale / 1.1) * 10) / 10);
     }
     const autoscale = () => {
         console.log("autoscale");
