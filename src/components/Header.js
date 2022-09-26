@@ -1,4 +1,4 @@
-const Header = ({pdf}) => {
+const Header = ({pdf,high}) => {
   const [pageNo, pageCount, nextPage, prevPage, scale, autoscale, zoomIn, zoomOut] = pdf;
   return (
     <div className="self-stretch rounded-[8px] bg-white shadow-[0px_10px_15px_-3px_rgba(0,_0,_0,_0.1),_0px_4px_6px_-2px_rgba(0,_0,_0,_0.05)] h-[54px] shrink-0 overflow-hidden flex flex-row p-[8px_16px_8px_22px] box-border items-center justify-start gap-[16px] text-left text-lg text-gray-500 font-inter">
@@ -46,7 +46,7 @@ const Header = ({pdf}) => {
             />
           </button>
         </div>
-        <div className="flex flex-row items-start justify-start">
+        <div onClick={high} className="flex flex-row items-start justify-start">
           <button className="cursor-pointer [border:1px_solid_#e8e8e8] p-[8px_12px] bg-[transparent] box-border relative h-[38px] flex flex-row items-center justify-center hover:bg-gray-400">
             <img
               className="relative w-[24px] h-[24px] shrink-0 overflow-hidden"
