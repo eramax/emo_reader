@@ -6,7 +6,7 @@ const PdfView = ({ url }) => {
   let viewer = useRef();
   let textDiv = useRef();
   let mainCanvas = useRef();
-  const [pageNo, nextPage, scale, setScale] = usePdf(url, viewer,mainCanvas,textDiv);
+  const [pageNo, pageCount, nextPage, prevPage, scale, autoscale, zoomIn, zoomOut] = usePdf(url, viewer,mainCanvas,textDiv);
 
 
 

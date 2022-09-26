@@ -5,9 +5,10 @@ import { EventBus, TextLayerBuilder } from "pdfjs-dist/web/pdf_viewer";
 PDFJS.GlobalWorkerOptions.workerSrc = pdfWorker
 
 export default function usePdf(url, viewer, mainCanvas, textDiv) {
-    const [pdfdoc, setPdfdoc] = useState(null);
     const [pageNo, setPageNo] = useState(1);
-    const [scale, setScale] = useState(1);
+    const [pageCount, setPageCount] = useState(0);
+    const [scale, setScale] = useState(2);
+    const [autoscaleVal, setAutoScaleVal] = useState(2);
 
     const renderPDF = async (path) => {
         let eventBus = new EventBus();
@@ -15,22 +16,21 @@ export default function usePdf(url, viewer, mainCanvas, textDiv) {
             console.log(evt);
         })
         const pdfDocument = await PDFJS.getDocument({ url }).promise;
-        setPdfdoc(pdfDocument);
-        const numPages = pdfDocument.numPages;
-        console.log(pdfDocument);
+        setPageCount(pdfDocument.numPages);
 
         const page = await pdfDocument.getPage(pageNo);
-        let autoscale = viewer.current.offsetWidth / page.getViewport({ scale: 1.0 }).width;
-        autoscale = Math.round((window.devicePixelRatio * autoscale - 0.1) * 10) / 10;
-        console.log(autoscale);
-        setScale(autoscale);
 
-        const viewport = page.getViewport({ scale: autoscale });
+        let _autoscale = viewer.current.offsetWidth / page.getViewport({ scale: 1.0 }).width;
+        _autoscale = Math.round((window.devicePixelRatio * _autoscale - 0.1) * 10) / 10;
+        console.log(_autoscale);
+        setAutoScaleVal(_autoscale);
+
+        const viewport = page.getViewport({ scale });
 
         mainCanvas.current.height = viewport.height;
         mainCanvas.current.width = viewport.width;
 
-        textDiv.current.innerHTML="";
+        textDiv.current.innerHTML = "";
         textDiv.current.height = viewport.height;
         textDiv.current.width = viewport.width;
         const renderContext = {
@@ -38,7 +38,6 @@ export default function usePdf(url, viewer, mainCanvas, textDiv) {
             viewport
         };
 
-        console.log("Rendering");
         page.render(renderContext);
 
         textDiv.current.style.left = mainCanvas.current.offsetLeft + 'px';
@@ -57,17 +56,34 @@ export default function usePdf(url, viewer, mainCanvas, textDiv) {
 
         textLayer.setTextContent(textContent)
         textLayer.render();
+        console.log("Rendered");
     };
 
     const nextPage = () => {
         console.log("next");
         setPageNo(pageNo + 1);
     }
+    const prevPage = () => {
+        console.log("prev");
+        setPageNo(pageNo - 1);
+    }
+    const zoomIn = () => {
+        console.log("zoomIn");
+        setScale(scale * 1.1);
+    }
+    const zoomOut = () => {
+        console.log("zoomOut");
+        setScale(scale / 1.1);
+    }
+    const autoscale = () => {
+        console.log("autoscale");
+        setScale(autoscale);
+    }
     useEffect(() => {
         renderPDF(url).catch(console.error);
-    }, [url, pageNo])
+    }, [url, pageNo, scale])
 
 
-    return [pageNo, nextPage, scale, setScale];
+    return [pageNo, pageCount, nextPage, prevPage, scale, autoscale, zoomIn, zoomOut];
 
 }
