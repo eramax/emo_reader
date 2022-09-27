@@ -83,3 +83,5 @@ body {
 .textLayer .endOfContent.active {
   top: 0;
 }
+
+.highlight2 { background-color: yellow; }
