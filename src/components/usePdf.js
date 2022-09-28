@@ -12,20 +12,14 @@ class PdfReader {
         this.autoscale = autoscale
         this.scale = scale
         this.eventBus = new EventBus();
-        this.selectionColor = "green"
+        this.selectionColor = "#51698f"
         globalThis.reader = this
         this.eventBus.on('textlayerrendered', (evt) => {
             console.log('textlayerrendered')
             this.renderHighlights()
         })
         document.addEventListener('click', eve => {
-            if(eve.target.classList.contains('pdf-hg'))
-            {
-                // get the highlight id and alert a popup to the user if he want to remove the whole highlight
-                console.log('pdf-hg');
-                eve.target.classList.remove('pdf-hg');
-                eve.target.style.background ="white";
-            }
+            this.removeHighlight(eve.target);
         });
     }
     loadPdf = async (url, pageNumber = 1, highlights = []) => {
@@ -115,19 +109,37 @@ class PdfReader {
         var endDOM = (end.parentElement == parent) ? end : end.parentElement;
         let start_id = [...startDOM.parentNode.childNodes].indexOf(startDOM);
         let end_id = [...endDOM.parentNode.childNodes].indexOf(endDOM)
+        let uniqueId = Date.now().toString(36) + Math.random().toString(36).substring(2);
+        let hg = {
+            id: uniqueId, title: `Page-${this.pageNumber}`,
+            body: sel.toString(), page: this.pageNumber,
+            start_id, end_id, color: this.selectionColor
+        };
+        this.highlights.push(hg);
+        console.log(this.highlights);
+
+        this.highlight(hg);
         sel.removeRange(range);
-        this.highlight(start_id, end_id, this.selectionColor);
-        this.highlights.push({ start_id, end_id, color: this.selectionColor });
     }
-    highlight = (start_id, end_id, color) => {
-        for (let i = start_id; i <= end_id; i++) {
-            this.textLayerDiv.current.childNodes[i].style.background = color;
-            this.textLayerDiv.current.childNodes[i].classList.add('pdf-hg');
+    renderHighlights = () => {
+        this.highlights.filter(hg => hg.page == this.pageNumber).forEach(hg => { this.highlight(hg) });
+    }
+    highlight = (hg) => {
+        for (let i = hg.start_id; i <= hg.end_id; i++) {
+            this.textLayerDiv.current.childNodes[i].classList.add('pdf-hg', `hg-${hg.id}`, `bg-[${hg.color}]`);
             //console.log(i, this.textLayerDiv.current.childNodes[i]);
         }
     }
-    renderHighlights = () => {
-        this.highlights.forEach(hg => {this.highlight(hg.start_id, hg.end_id, hg.color)});
+    removeHighlight = (el) => {
+        // if (el.classList.contains('pdf-hg')) {
+        //     // get the highlight id and alert a popup to the user if he want to remove the whole highlight
+        //     console.log('remove-hg');
+        //     let identifier = [...el.classList].filter(s => s.includes('hg-'))[0];
+        //     let color = [...el.classList].filter(s => s.includes('bg-'))[0];
+        //     document.querySelectorAll(`.${identifier}`).forEach(node => {
+        //         node.classList.remove('pdf-hg', identifier, color);
+        //     });
+        // }
     }
 }
 

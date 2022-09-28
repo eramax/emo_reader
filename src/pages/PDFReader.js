@@ -5,7 +5,7 @@ import usePdf from "../components/usePdf";
 
 const PDFReader = () => {
 
-  const [highlights, setHighlights] = useState([{ title: Date.now, body: "hello" }]);
+  const [highlights, setHighlights] = useState([{ id: "zrh2vcr1xefl8l9uiwg", page: 1, title: Date.now, body: "hello", start_id: 20, end_id: 40, color: "#51698f" }]);
   const [pageNumber, setPageNumber] = useState(1);
   const [scale, setScale] = useState(1);
   let viewer = useRef();
@@ -20,7 +20,7 @@ const PDFReader = () => {
 
   useEffect(() => {
     const initReader = async () => {
-      await reader.loadPdf(url)
+      await reader.loadPdf(url,1,highlights)
     }
     initReader().catch(console.error);;
   })
