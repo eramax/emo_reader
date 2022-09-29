@@ -15,6 +15,11 @@ module.exports = {
       },
       black: "#000",
       white: "#fff",
+      yellow: "#FFFF00",
+      red: "#FF0000",
+      green: "#00FF00",
+      blue: "#0000FF",
+      stale: "#262E40"
     },
     fontSize: { sm: "12px", base: "14px", lg: "16px" },
   },
